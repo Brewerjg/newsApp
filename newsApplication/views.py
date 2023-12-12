@@ -2,17 +2,18 @@ from django.shortcuts import render
 import requests
 
 def index(request):
-    r = requests.get('http://api.mediastack.com/v1/news?access_key=741a516a62637aed5ab6a1e4d87e38cc&countries=au,-us')
+    r = requests.get('https://newsapi.org/v2/top-headlines?country=us&apiKey=d4c18b0cb8854efbbbdcf18221e930fc')
     res = r.json()
-    data = res.get("data")  # Fix error with data = ["data"]
+    data = res.get("articles")  # Fix error with data = ["data"]
     title = []
     description = []
-    image = []
+    urlToImage = []
     url = []
-    for i in data:
-        title.append(i['title'])
-        description.append(i['description'])
-        image.append(i['image'])
-        url.append(i['url'])
-    news = zip(title, description, image, url)
-    return render(request, 'newsApplication/index.html', {'news': news})
+    for i in range(len(data)):
+        f = data[i]
+        title.append(f['title'])
+        description.append(f['description'])
+        urlToImage.append(f['urlToImage'])
+        url.append(f['url'])
+    news = zip(title, description, urlToImage, url)
+    return render(request, 'newsApplication/index.html', context={'news': news})
